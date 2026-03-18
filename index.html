@@ -20,6 +20,10 @@
         .day-transition {
             animation: nextDayFlash 0.4s ease-out;
         }
+        /* تأثير لمعان لشريط التقدم */
+        .progress-glow {
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        }
     </style>
 </head>
 <body class="min-h-screen bg-slate-950 text-slate-200 font-sans p-4 md:p-8">
@@ -28,28 +32,44 @@
         
         <!-- شريط المعلومات العلوي -->
         <header class="flex flex-col md:flex-row justify-between items-center bg-slate-900 p-4 rounded-xl border border-slate-800 shadow-lg gap-4">
-            <div class="flex items-center gap-6">
+            <div class="flex flex-wrap justify-center items-center gap-4 md:gap-6 w-full md:w-auto">
                 <div class="text-center">
                     <span data-i18n="day" class="text-slate-400 text-sm block">اليوم</span>
                     <span id="header-day" class="text-2xl font-bold text-white">1</span>
                 </div>
-                <div class="h-10 w-px bg-slate-700"></div>
+                
+                <div class="hidden md:block h-10 w-px bg-slate-700"></div>
+                
                 <div>
                     <span class="text-slate-400 text-sm flex items-center gap-1">
-                        <i data-lucide="dollar-sign" class="w-4 h-4"></i> <span data-i18n="cash">السيولة النقدية</span>
+                        <i data-lucide="dollar-sign" class="w-4 h-4 text-green-400"></i> <span data-i18n="cash">السيولة النقدية</span>
                     </span>
                     <span id="header-balance" class="text-2xl font-bold text-green-400">$200.00</span>
                 </div>
-                <div class="h-10 w-px bg-slate-700"></div>
-                <div>
-                    <span class="text-slate-400 text-sm flex items-center gap-1">
-                        <i data-lucide="briefcase" class="w-4 h-4"></i> <span data-i18n="netWorth">الثروة الإجمالية</span>
-                    </span>
-                    <span id="header-networth" class="text-2xl font-bold text-blue-400">$200.00</span>
+                
+                <div class="hidden md:block h-10 w-px bg-slate-700"></div>
+                
+                <!-- قسم الثروة والهدف (محدث) -->
+                <div class="flex flex-col w-48 bg-slate-800/50 p-2 rounded-lg border border-slate-700 relative overflow-hidden">
+                    <div class="flex justify-between items-start mb-1">
+                        <span class="text-slate-400 text-sm flex items-center gap-1">
+                            <i data-lucide="briefcase" class="w-4 h-4 text-blue-400"></i> <span data-i18n="netWorth">الثروة</span>
+                        </span>
+                        <!-- شارة الهدف -->
+                        <span class="text-[10px] font-bold text-amber-300 bg-amber-900/40 px-2 py-0.5 rounded-full border border-amber-500/30 flex items-center gap-1 shadow-[0_0_8px_rgba(251,191,36,0.3)] animate-pulse">
+                            <i data-lucide="target" class="w-3 h-3"></i> <span data-i18n="goalBadge">الهدف: 10K$</span>
+                        </span>
+                    </div>
+                    <span id="header-networth" class="text-xl font-bold text-blue-400">$200.00</span>
+                    
+                    <!-- شريط التقدم نحو الفوز -->
+                    <div class="w-full bg-slate-900 rounded-full h-1.5 mt-2 border border-slate-700 overflow-hidden">
+                        <div id="goal-progress" class="bg-gradient-to-r from-blue-500 via-indigo-500 to-amber-400 h-1.5 rounded-full transition-all duration-700 progress-glow" style="width: 2%"></div>
+                    </div>
                 </div>
             </div>
 
-            <div class="flex gap-3 items-center flex-wrap justify-center">
+            <div class="flex gap-3 items-center flex-wrap justify-center mt-2 md:mt-0">
                 <!-- زر تغيير اللغة -->
                 <button 
                     onclick="toggleLang()"
@@ -104,7 +124,7 @@
                 <!-- المحفظة الحالية -->
                 <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-lg">
                     <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                        <i data-lucide="briefcase" class="w-5 h-5 text-blue-400"></i> <span data-i18n="portfolioTitle">محفظتك الاستثمارية</span>
+                        <i data-lucide="pie-chart" class="w-5 h-5 text-blue-400"></i> <span data-i18n="portfolioTitle">محفظتك الاستثمارية</span>
                     </h3>
                     <div id="portfolio-container" class="space-y-3">
                         <!-- يتم حقن بيانات المحفظة هنا بواسطة الجافاسكربت -->
@@ -128,7 +148,7 @@
             <div class="lg:col-span-2 space-y-6">
                 
                 <div class="bg-slate-900 rounded-xl border border-slate-800 shadow-lg p-5">
-                    <div class="flex justify-between items-center mb-6">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-3">
                         <h2 class="text-xl font-bold text-white flex items-center gap-2">
                             <i data-lucide="building" class="w-5 h-5 text-indigo-400"></i> <span data-i18n="marketTitle">سوق الأوراق المالية</span>
                         </h2>
@@ -161,11 +181,13 @@
                         </table>
                     </div>
 
-                    <div class="mt-6 p-4 bg-slate-800/50 rounded-lg border border-slate-700/50 flex items-start gap-3">
-                        <i data-lucide="shield-alert" class="w-5 h-5 text-indigo-400 shrink-0 mt-0.5"></i>
-                        <p class="text-sm text-slate-400 leading-relaxed">
-                            <strong data-i18n="adviceTitle">نصيحة للمبتدئين:</strong> 
-                            <span data-i18n="adviceText">راقب شاشة التلفاز. الأخبار المعقدة قد تؤثر على <strong>قطاعات بأكملها</strong> (كأن يؤثر خبر أمني على التقنية سلبياً وعلى الدفاع إيجابياً). كما ننصح بشراء أسهم بكميات كبيرة لتوفير رسوم العمولة!</span>
+                    <!-- تم تحديث النص هنا لذكر الهدف -->
+                    <div class="mt-6 p-4 bg-slate-800/50 rounded-lg border border-slate-700/50 flex items-start gap-3 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-1 bg-amber-500 h-full"></div>
+                        <i data-lucide="target" class="w-6 h-6 text-amber-400 shrink-0 mt-0.5 animate-pulse"></i>
+                        <p class="text-sm text-slate-300 leading-relaxed">
+                            <strong data-i18n="adviceTitle" class="text-amber-400">مهمتك:</strong> 
+                            <span data-i18n="adviceText">هدفك هو الوصول لثروة <span class="text-amber-400 font-bold">10,000$</span>! راقب شاشة التلفاز لتحليل الأخبار. تذكر أن الأخبار المعقدة قد تؤثر على قطاعات بأكملها. اشترِ بكميات كبيرة لتوفير رسوم العمولة.</span>
                         </p>
                     </div>
                 
@@ -229,7 +251,7 @@
         let currentLang = 'ar';
         const translations = {
             ar: {
-                day: "اليوم", cash: "السيولة النقدية", netWorth: "الثروة الإجمالية",
+                day: "اليوم", cash: "السيولة النقدية", netWorth: "الثروة", goalBadge: "الهدف: 10K$",
                 takeLoan: "طلب قرض ($50)", endDay: "إنهاء اليوم",
                 tvChannel: "قناة الاقتصادية", live: "مباشر",
                 portfolioTitle: "محفظتك الاستثمارية", emptyPortfolio: "المحفظة فارغة. ابدأ الاستثمار!",
@@ -237,8 +259,8 @@
                 buyInsider: "شراء معلومة مسربة ($20)",
                 marketTitle: "سوق الأوراق المالية", feeNotice: "عمولة 1% (حد أدنى 1$) للعملية",
                 thCompany: "الشركة", thCategory: "التصنيف", thPrice: "السعر الحالي", thTrend: "الاتجاه (10 أيام)", thTrade: "التداول",
-                adviceTitle: "نصيحة للمبتدئين:",
-                adviceText: "راقب شاشة التلفاز. الأخبار المعقدة قد تؤثر على <strong>قطاعات بأكملها</strong> (كأن يؤثر خبر أمني على التقنية سلبياً وعلى الدفاع إيجابياً). كما ننصح بشراء أسهم بكميات كبيرة لتوفير رسوم العمولة!",
+                adviceTitle: "مهمتك:",
+                adviceText: "هدفك هو الوصول لثروة <span class='text-amber-400 font-bold'>10,000$</span>! راقب شاشة التلفاز لتحليل الأخبار. تذكر أن الأخبار المعقدة قد تؤثر على قطاعات بأكملها. اشترِ بكميات كبيرة لتوفير رسوم العمولة.",
                 historyTitle: "سجل العمليات", noHistory: "لا توجد عمليات حتى الآن.",
                 victoryTitle: "لقد فزت!", victoryDesc: "أثبتت جدارتك في وول ستريت ووصلت ثروتك إلى $10,000!",
                 statDays: "عدد الأيام المستغرقة:", statTrades: "إجمالي الصفقات:",
@@ -249,7 +271,7 @@
                 buyMaxTitle: "شراء بأقصى مبلغ متاح", sellAllTitle: "بيع كل الأسهم المملوكة"
             },
             en: {
-                day: "Day", cash: "Cash", netWorth: "Net Worth",
+                day: "Day", cash: "Cash", netWorth: "Net Worth", goalBadge: "Goal: $10K",
                 takeLoan: "Take Loan ($50)", endDay: "End Day",
                 tvChannel: "Economy Channel", live: "LIVE",
                 portfolioTitle: "Your Portfolio", emptyPortfolio: "Portfolio is empty. Start investing!",
@@ -257,8 +279,8 @@
                 buyInsider: "Buy Insider Info ($20)",
                 marketTitle: "Stock Market", feeNotice: "1% Fee (Min $1) per trade",
                 thCompany: "Company", thCategory: "Category", thPrice: "Current Price", thTrend: "Trend (10 days)", thTrade: "Trade",
-                adviceTitle: "Beginner's Advice:",
-                adviceText: "Watch the TV. Complex news might affect <strong>entire sectors</strong> (e.g., security news hits Tech negatively but boosts Defense). Buy in large chunks to save on fees!",
+                adviceTitle: "Your Mission:",
+                adviceText: "Your goal is to reach <span class='text-amber-400 font-bold'>$10,000</span>! Watch the TV. Complex news might affect entire sectors. Buy in large chunks to save on fees!",
                 historyTitle: "Transaction History", noHistory: "No transactions yet.",
                 victoryTitle: "You Won!", victoryDesc: "You proved yourself on Wall Street and reached $10,000!",
                 statDays: "Days Taken:", statTrades: "Total Trades:",
@@ -617,9 +639,16 @@
         function renderUI() {
             checkWinCondition();
 
+            const netWorth = getNetWorth();
+
+            // تحديث الأرقام الأساسية
             document.getElementById('header-day').innerText = day;
             document.getElementById('header-balance').innerText = `$${balance.toFixed(2)}`;
-            document.getElementById('header-networth').innerText = `$${getNetWorth().toFixed(2)}`;
+            document.getElementById('header-networth').innerText = `$${netWorth.toFixed(2)}`;
+
+            // تحديث شريط التقدم للهدف
+            const progressPercent = Math.min(100, Math.max(0, (netWorth / TARGET_WEALTH) * 100));
+            document.getElementById('goal-progress').style.width = `${progressPercent}%`;
 
             const insiderBtn = document.getElementById('btn-insider');
             if (insiderBtn) {
